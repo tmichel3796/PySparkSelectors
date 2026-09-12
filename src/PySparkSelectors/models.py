@@ -259,7 +259,7 @@ class SelectorcolumnOperations:
     # --------------------------------------------------
 
     @staticmethod
-    def operator_wrapper(op: Callable[[Any, Any], Any]) -> Callable[..., "SelectorcolumnOperations"]:
+    def operator_wrapper(op: Callable[..., Any]) -> Callable[..., "SelectorcolumnOperations"]:
         """Build a dunder-method implementation that chains a Python operator.
 
         Used to define every arithmetic/comparison dunder on this class
@@ -269,17 +269,20 @@ class SelectorcolumnOperations:
         Parameters
         ----------
         op : callable
-            A 2-argument function from the standard library `operator` module
-            (or anything with the same shape), applied as ``op(column, other)``
-            to each matched column's `pyspark.sql.Column` expression once the
-            selector is resolved against a real dataframe.
+            A function from the standard library `operator` module (or
+            anything with the same shape) applied to each matched column's
+            `pyspark.sql.Column` expression once the selector is resolved
+            against a real dataframe. Binary operators receive
+            ``(column, other)``; unary operators such as
+            ``operator.invert`` receive only ``column``.
 
         Returns
         -------
         callable
-            A dunder-method-shaped function ``overload(self, other)`` that
-            appends ``lambda c: op(c, other)`` to the selector's transform
-            pipeline via `_copy`, and returns the resulting new selector.
+            A dunder-method-shaped function that appends the corresponding
+            operator call to the selector's transform pipeline via `_copy`
+            and returns the resulting new selector. Binary dunders accept
+            ``(self, other)``; unary dunders accept only ``self``.
 
         Examples
         --------
@@ -356,8 +359,8 @@ class SelectorcolumnOperations:
         Returns
         -------
         callable
-            A function `wrapper(c, *args, **kwargs)` that, when the first positional
-            argument (if any) is a `pyspark.sql.Column`, calls
+            A function `wrapper(c, *args, **kwargs)` that, when the first
+            argument in `args` (if any) is a `pyspark.sql.Column`, calls
             `pyspark.sql.functions.<method_name>(c, *args, **kwargs)` (column-to-column
             semantics); otherwise calls `getattr(c, method_name)(*args, **kwargs)`
             (literal semantics via `Column`'s own bound method). Carries `Column`'s
@@ -380,10 +383,10 @@ class SelectorcolumnOperations:
         wrapper.__doc__ = column_method.__doc__
         # same rename-op marker carry-through as `_make_column_only_wrapper`
         # (defensive -- no current rename op collides with an `F` name).
-        wrapper._is_rename_op = getattr(column_method, "_is_rename_op", False)
+        # wrapper._is_rename_op = getattr(column_method, "_is_rename_op", False)
         return wrapper
 
-    def resolve_columns(self, df: DataFrame) -> list[Column]:
+    def resolve_columns(self: "BaseSelector", df: DataFrame) -> list[Column]:
         """Resolve this selector's matched columns into transformed `Column` expressions.
 
         Parameters
@@ -471,13 +474,13 @@ class SelectorSelectionOperations:
         `_selector_copy` when a set operator (``~ - & ^ |``) combines two
         selectors. When present, `resolve` (defined on `BaseSelector`
         subclasses) must call this instead of its own default matching
-        logic. Defaults to an empty list when not given.
+        logic. Defaults to `None` when not given.
 
     Attributes
     ----------
-    _resolver : callable or list
-        The resolver function described above, or an empty list when this
-        selector has not been produced by a set operator.
+    _resolver : callable or None
+        The resolver function described above, or `None` when this selector
+        has not been produced by a set operator.
 
     Examples
     --------
@@ -493,11 +496,11 @@ class SelectorSelectionOperations:
         Parameters
         ----------
         resolver : callable, optional
-            Existing resolver function to start from. Defaults to an empty
-            list when not given.
+            Existing resolver function to start from. Defaults to `None` when
+            not given.
         """
 
-        self._resolver = resolver or []
+        self._resolver = resolver
 
     def _selector_copy(self, resolver: Callable[[DataFrame], list[str]]) -> "SelectorSelectionOperations":
         """Return an immutable copy of this selector with a combined resolver.
@@ -525,7 +528,7 @@ class SelectorSelectionOperations:
         return new
 
     def __and__(
-        self, other: Union["BaseSelector", Column, "SelectorFilterCondition"]
+        self: "BaseSelector", other: Union["BaseSelector", Column, "SelectorFilterCondition"]
     ) -> Union["SelectorSelectionOperations", "SelectorFilterCondition"]:
         """Intersect two selectors' matched columns, or AND two row conditions.
 
@@ -573,7 +576,7 @@ class SelectorSelectionOperations:
         return self._selector_copy(_resolve)
 
     def __or__(
-        self, other: Union["BaseSelector", Column, "SelectorFilterCondition"]
+        self: "BaseSelector", other: Union["BaseSelector", Column, "SelectorFilterCondition"]
     ) -> Union["SelectorSelectionOperations", "SelectorFilterCondition"]:
         """Union two selectors' matched columns, or OR two row conditions.
 
@@ -612,7 +615,9 @@ class SelectorSelectionOperations:
 
         return self._selector_copy(_resolve)
 
-    def __sub__(self, other: "BaseSelector") -> "SelectorSelectionOperations":
+    def __sub__(
+        self: "BaseSelector", other: "BaseSelector"
+    ) -> Union["SelectorSelectionOperations", "SelectorcolumnOperations"]:
         """Return columns matched by `self` but not by `other` (set difference).
 
         Parameters
@@ -622,9 +627,10 @@ class SelectorSelectionOperations:
 
         Returns
         -------
-        SelectorSelectionOperations
+        SelectorSelectionOperations or SelectorcolumnOperations
             A new selector matching every column in `self` that is not also
-            in `other`.
+            in `other`. The column-operation result is used when the shared
+            `BaseSelector.__sub__` dispatcher receives a non-selector operand.
 
         Examples
         --------
@@ -643,7 +649,7 @@ class SelectorSelectionOperations:
 
         return self._selector_copy(_resolve)
 
-    def __xor__(self, other: "BaseSelector") -> "SelectorSelectionOperations":
+    def __xor__(self: "BaseSelector", other: "BaseSelector") -> "SelectorSelectionOperations":
         """Return columns matched by exactly one of `self`/`other` (symmetric difference).
 
         Parameters
@@ -675,7 +681,7 @@ class SelectorSelectionOperations:
 
         return self._selector_copy(_resolve)
 
-    def __invert__(self) -> Union["SelectorSelectionOperations", "SelectorFilterCondition"]:
+    def __invert__(self: "BaseSelector") -> Union["SelectorSelectionOperations", "SelectorFilterCondition"]:
         """Complement this selector's matched columns, or negate a row condition.
 
         Returns
@@ -811,8 +817,8 @@ class SelectorFilterCondition:
 
             if not exprs:
                 raise PySparkValueError(
-                    error_class="CANNOT_BE_EMPTY",
-                    message_parameters={"item": "columns matched by the selector"},
+                    errorClass="CANNOT_BE_EMPTY",
+                    messageParameters={"item": "columns matched by the selector"},
                 )
 
             combined = exprs[0]
@@ -966,6 +972,9 @@ class BaseSelector(SelectorSelectionOperations, SelectorcolumnOperations):
     resolver : callable, optional
         Initial combinator resolver, forwarded to
         `SelectorSelectionOperations.__init__`.
+    require_col_match : bool, default True
+        Whether `resolve` raises `pyspark.errors.PySparkValueError` when the
+        selector matches zero columns.
 
     Notes
     -----
@@ -1033,8 +1042,8 @@ class BaseSelector(SelectorSelectionOperations, SelectorcolumnOperations):
         """
 
         raise PySparkNotImplementedError(
-            error_class="NOT_IMPLEMENTED",
-            message_parameters={"feature": "BaseSelector.resolve"},
+            errorClass="NOT_IMPLEMENTED",
+            messageParameters={"feature": "BaseSelector.resolve"},
         )
 
     def _check_matched(self, matched: list[str]) -> list[str]:
@@ -1077,8 +1086,8 @@ class BaseSelector(SelectorSelectionOperations, SelectorcolumnOperations):
 
         if not matched and self.require_col_match:
             raise PySparkValueError(
-                error_class="CANNOT_BE_EMPTY",
-                message_parameters={"item": f"columns matched by {self.__class__.__name__}"},
+                errorClass="CANNOT_BE_EMPTY",
+                messageParameters={"item": f"columns matched by {self.__class__.__name__}"},
             )
 
         return matched
@@ -1093,7 +1102,7 @@ class BaseSelector(SelectorSelectionOperations, SelectorcolumnOperations):
     # subtraction (e.g. some_selector - 5) since a plain value has no .resolve().
     # --------------------------------------------------
 
-    def __sub__(self, other: Union["BaseSelector", Any]) -> "BaseSelector":
+    def __sub__(self, other: Any) -> SelectorSelectionOperations | SelectorcolumnOperations:
         """Dispatch `-` to set-difference (selector operand) or arithmetic (plain value).
 
         Parameters
@@ -1148,6 +1157,9 @@ class DTypeSelector(BaseSelector):
         a single category base class like `T.NumericType`).
     transforms : list of callable, optional
         Initial transform pipeline, forwarded to `BaseSelector.__init__`.
+    require_col_match : bool, default True
+        Whether `resolve` raises `pyspark.errors.PySparkValueError` when zero
+        columns match the requested data types.
 
     Attributes
     ----------
@@ -1467,6 +1479,9 @@ class RegexSelector(BaseSelector):
         pattern itself anchors with ``^``/``$``).
     transforms : list of callable, optional
         Initial transform pipeline, forwarded to `BaseSelector.__init__`.
+    require_col_match : bool, default True
+        Whether `resolve` raises `pyspark.errors.PySparkValueError` when zero
+        columns match `pattern`.
 
     Attributes
     ----------

@@ -198,9 +198,10 @@ def initialize() -> None:
     make_expr_based_override("orderBy", alias_results=False)
     make_name_based_override("drop")
     make_name_based_override("groupBy")
+    make_name_based_override("groupby")
 
-    for _cls in _DATAFRAME_CLASSES:
-        _cls.groupby = _cls.groupBy
+    # for _cls in _DATAFRAME_CLASSES:
+    #     _cls.groupby = _cls.groupBy
 
     _GROUPED_DATA_CLASSES = tuple(c for c in (GroupedData, _ConnectGroupedData) if c is not None)
 
@@ -208,11 +209,14 @@ def initialize() -> None:
     _patch_classes(_DATAFRAME_CLASSES, "withColumns", _build_with_columns_override)
     _patch_classes(_GROUPED_DATA_CLASSES, "agg", _build_agg_override)
     _patch_classes(_DATAFRAME_CLASSES, "filter", _build_filter_override)
+    _patch_classes(_DATAFRAME_CLASSES, "where", _build_filter_override)
 
-    for _cls in _DATAFRAME_CLASSES:
-        _cls.where = _cls.filter
+    # for _cls in _DATAFRAME_CLASSES:
+    #     _cls.where = _cls.filter
 
-    SelectorcolumnOperations.cast = SelectorcolumnOperations.spark_wrapper(Column.cast)
+    # this can be iffy, was causing errors  in just file checking, but is being used to handle
+    # cast override because the normal function overrides doesn't alway's work in the way expected
+    # SelectorcolumnOperations.cast = SelectorcolumnOperations.spark_wrapper(Column.cast)
     globals().setdefault("_INITIALIZED", True)
 
 

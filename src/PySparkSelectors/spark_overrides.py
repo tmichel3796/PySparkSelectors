@@ -1,5 +1,5 @@
 from collections.abc import Callable, Sequence
-from typing import Any, Union
+from typing import Any, Union, cast
 
 from pyspark.errors import PySparkTypeError, PySparkValueError
 from pyspark.sql import DataFrame
@@ -94,7 +94,8 @@ def _patch_classes(
     """
     for cls in classes:
         original = _true_original(cls, method_name)
-        override = build_override(original)
+        override = cast(Any, build_override(original))
+        # override = build_override(original)
         override._cs_original = original
         override.__name__ = method_name
         override.__qualname__ = f"{cls.__name__}.{method_name}"
@@ -126,8 +127,8 @@ def _make_dispatching_column_wrapper(method_name: str) -> Callable[..., Column]:
     Returns
     -------
     callable
-        A function `wrapper(c, *args, **kwargs)` that, when the first positional
-        argument (if any) is a `pyspark.sql.Column`, calls
+        A function `wrapper(c, *args, **kwargs)` that, when the first
+        argument in `args` (if any) is a `pyspark.sql.Column`, calls
         `pyspark.sql.functions.<method_name>(c, *args, **kwargs)` (column-to-column
         semantics); otherwise calls `getattr(c, method_name)(*args, **kwargs)`
         (literal semantics via `Column`'s own bound method). Carries `Column`'s
@@ -148,9 +149,11 @@ def _make_dispatching_column_wrapper(method_name: str) -> Callable[..., Column]:
 
     wrapper.__name__ = method_name
     wrapper.__doc__ = column_method.__doc__
+    # I don't think I actually need _is_rename_op,
+    # might be able to delete all of these comments
     # same rename-op marker carry-through as `_make_column_only_wrapper`
     # (defensive -- no current rename op collides with an `F` name).
-    wrapper._is_rename_op = getattr(column_method, "_is_rename_op", False)
+    # wrapper._is_rename_op = getattr(column_method, "_is_rename_op", False)
     return wrapper
 
 
@@ -337,11 +340,13 @@ def _make_column_only_wrapper(method_name: str) -> Callable[..., Column]:
 
     wrapper.__name__ = method_name
     wrapper.__doc__ = column_method.__doc__
+    # I don't think I actually need _is_rename_op,
+    # might be able to delete all of these comments
     # carry the `@_rename_op` marker (e.g. `.prefix()`/`.suffix()`/
     # `.map_alias()`) through to this wrapper, so `spark_wrapper` -- which
     # actually receives this wrapper, not the raw `Column` method -- can see
     # it and flag the selector copy as having a rename op applied.
-    wrapper._is_rename_op = getattr(column_method, "_is_rename_op", False)
+    # wrapper._is_rename_op = getattr(column_method, "_is_rename_op", False)
     return wrapper
 
 
@@ -658,7 +663,7 @@ def _build_with_columns_override(original):
             if collisions:
                 raise PySparkValueError(
                     message=(
-                        f"withColumns() column name collision on {sorted(collisions)!r} -- "
+                        f"withColumns() column name collision on {sorted(str(name) for name in collisions)!r} -- "
                         "more than one mutation in this call targets the same column name; "
                         "rename one of them or combine them into a single mutation instead "
                         "of letting one silently overwrite the other."

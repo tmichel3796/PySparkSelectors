@@ -8,13 +8,13 @@ You can contribute in many ways:
 
 ### Report Bugs
 
-Report bugs at https://github.com/tmichel3796/PySparkSelectors/issues.
+Report bugs at <https://github.com/tmichel3796/PySpark_Column_Selectors/issues>.
 
 If you are reporting a bug, please include:
 
-- Your operating system name and version.
-- Any details about your local setup that might be helpful in troubleshooting.
-- Detailed steps to reproduce the bug.
+-   Your operating system name and version.
+-   Any details about your local setup that might be helpful in troubleshooting.
+-   Detailed steps to reproduce the bug.
 
 ### Fix Bugs
 
@@ -30,107 +30,111 @@ PySparkSelectors could always use more documentation, whether as part of the off
 
 To preview the docs locally:
 
-```sh
+``` sh
 just docs-serve
 ```
 
-This starts a local server at http://localhost:8000 with live reload. Edit files in `docs/` or add docstrings to your code (the API reference page is auto-generated).
+This starts a local server at <http://localhost:8000> with live reload. Edit files in `docs/` or add docstrings to your code (the API reference page is auto-generated).
 
 ### Submit Feedback
 
-The best way to send feedback is to file an issue at https://github.com/tmichel3796/PySparkSelectors/issues.
+The best way to send feedback is to file an issue at <https://github.com/tmichel3796/PySparkSelectors/issues>.
 
 If you are proposing a feature:
 
-- Explain in detail how it would work.
-- Keep the scope as narrow as possible, to make it easier to implement.
-- Remember that this is a volunteer-driven project, and that contributions are welcome :)
+-   Explain in detail how it would work.
+-   Keep the scope as narrow as possible, to make it easier to implement.
+-   Remember that this is a volunteer-driven project, and that contributions are welcome :)
 
 ## Get Started!
 
 Ready to contribute? Here's how to set up `PySparkSelectors` for local development.
 
-1. Fork the `PySparkSelectors` repo on GitHub.
-2. Clone your fork locally:
+1.  Fork the `PySparkSelectors` repo on GitHub.
 
-   ```sh
-   git clone git@github.com:your_name_here/PySparkSelectors.git
-   ```
+2.  Clone your fork locally:
 
-3. Install your local copy with uv:
+    ``` sh
+    git clone git@github.com:your_name_here/PySparkSelectors.git
+    ```
 
-   ```sh
-   cd PySparkSelectors/
-   uv sync
-   ```
+3.  Install your local copy with uv:
 
-4. Create a branch for local development:
+    ``` sh
+    cd PySparkSelectors/
+    uv sync
+    ```
 
-   ```sh
-   git checkout -b name-of-your-bugfix-or-feature
-   ```
+4.  Create a branch for local development:
 
-   Now you can make your changes locally.
+    ``` sh
+    git checkout -b name-of-your-bugfix-or-feature
+    ```
 
-5. When you're done making changes, check that your changes pass linting and the tests:
+    Now you can make your changes locally.
 
-   ```sh
-   just qa
-   ```
+5.  When you're done making changes, check that your changes pass linting and the tests:
 
-   Or run the tests alone:
+    ``` sh
+    just qa
+    ```
 
-   ```sh
-   just test
-   ```
+    Or run the tests alone:
 
-6. Commit your changes and push your branch to GitHub:
+    ``` sh
+    just test
+    ```
 
-   ```sh
-   git add .
-   git commit -m "Your detailed description of your changes."
-   git push origin name-of-your-bugfix-or-feature
-   ```
+6.  Commit your changes and push your branch to GitHub:
 
-7. Submit a pull request through the GitHub website.
+    ``` sh
+    git add .
+    git commit -m "Your detailed description of your changes."
+    git push origin name-of-your-bugfix-or-feature
+    ```
+
+7.  Submit a pull request through the GitHub website.
 
 ## Pull Request Guidelines
 
 Before you submit a pull request, check that it meets these guidelines:
 
-1. The pull request should include tests.
-2. If the pull request adds functionality, the docs should be updated. Put your new functionality into a function with a docstring, and add the feature to the list in README.md.
-3. The pull request should work for Python 3.12, 3.13, and 3.14. Tests run in GitHub Actions on every pull request to the main branch, make sure that the tests pass for all supported Python versions.
+1.  The pull request should include tests.
+2.  If the pull request adds functionality, the docs should be updated. Put your new functionality into a function with a docstring, and add the feature to the list in README.md.
+3.  The pull request should work for Python 3.12, 3.13, and 3.14. Tests run in GitHub Actions on every pull request to the main branch, make sure that the tests pass for all supported Python versions.
 
 ## Tips
 
 To run a subset of tests:
 
-```sh
+``` sh
 uv run pytest tests/
 ```
 
 ## Releasing a New Version
 
-1. **Bump the version** and **write the changelog:**
-   ```bash
-   uv version <version>        # or: uv version --bump minor
-   ```
-   Then write `CHANGELOG/<version>.md`. See previous entries for the format.
-2. **Commit:**
-   ```bash
-   git add pyproject.toml uv.lock CHANGELOG/
-   git commit -m "Release <version>"
-   ```
-3. **Release:**
-   ```bash
-   just release
-   ```
-   This creates an annotated `v*` tag, pushes it to GitHub, and creates a
-   GitHub Release with the changelog contents as release notes. The tag
-   push triggers `.github/workflows/publish.yml`, which builds the package,
-   generates SLSA provenance attestations, and publishes to PyPI via
-   trusted publishing.
+1.  **Bump the version** and **write the changelog:**
+
+    ``` bash
+    uv version <version>        # or: uv version --bump minor
+    ```
+
+    Then write `CHANGELOG/<version>.md`. See previous entries for the format.
+
+2.  **Commit:**
+
+    ``` bash
+    git add pyproject.toml uv.lock CHANGELOG/
+    git commit -m "Release <version>"
+    ```
+
+3.  **Release:**
+
+    ``` bash
+    just release
+    ```
+
+    This creates an annotated `v*` tag, pushes it to GitHub, and creates a GitHub Release with the changelog contents as release notes. The tag push triggers `.github/workflows/publish.yml`, which builds the package, generates SLSA provenance attestations, and publishes to PyPI via trusted publishing.
 
 ## Code of Conduct
 

@@ -1,6 +1,6 @@
 import re
 from collections.abc import Sequence
-from typing import Any
+from typing import Any, cast
 
 import pyspark.sql.types as T
 from pyspark.sql import DataFrame
@@ -603,7 +603,7 @@ def by_name(*names: str, require_col_match: bool = True) -> RegexSelector:
 # --------------------------------------------------------------------------------
 
 
-def exclude(*names: str, require_col_match: bool = True) -> RegexSelector:
+def exclude(*names: str, require_col_match: bool = True) -> BaseSelector:
     """Select every column EXCEPT `names`.
 
     Parameters
@@ -617,7 +617,7 @@ def exclude(*names: str, require_col_match: bool = True) -> RegexSelector:
 
     Returns
     -------
-    RegexSelector
+    BaseSelector
         Equivalent to ``all() - by_name(*names)``.
 
     Examples
@@ -625,7 +625,10 @@ def exclude(*names: str, require_col_match: bool = True) -> RegexSelector:
     >>> df.select(exclude('string_col'))
     DataFrame[...]
     """
-    return all(require_col_match=require_col_match) - by_name(*names, require_col_match=require_col_match)
+    return cast(
+        BaseSelector,
+        all(require_col_match=require_col_match) - by_name(*names, require_col_match=require_col_match),
+    )
 
 
 # --------------------------------------------------------------------------------

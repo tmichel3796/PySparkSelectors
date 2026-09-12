@@ -59,6 +59,7 @@ ci: check
 
 # Run all the tests for all the supported Python versions
 testall:
+    UV_LINK_MODE=copy UV_CONCURRENT_INSTALLS=4 uv run --python=3.11 pytest
     UV_LINK_MODE=copy UV_CONCURRENT_INSTALLS=4 uv run --python=3.12 pytest
     UV_LINK_MODE=copy UV_CONCURRENT_INSTALLS=4 uv run --python=3.13 pytest
     UV_LINK_MODE=copy UV_CONCURRENT_INSTALLS=4 uv run --python=3.14 pytest
