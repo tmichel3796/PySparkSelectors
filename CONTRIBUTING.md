@@ -8,7 +8,7 @@ You can contribute in many ways:
 
 ### Report Bugs
 
-Report bugs at <https://github.com/tmichel3796/PySpark_Column_Selectors/issues>.
+Report bugs at <https://github.com/tmichel3796/PySparkSelectors/issues>.
 
 If you are reporting a bug, please include:
 
