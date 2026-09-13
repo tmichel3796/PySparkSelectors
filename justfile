@@ -73,11 +73,11 @@ coverage:
 # Serve docs locally with live reload
 docs-serve:
     -lsof -ti :8000 | xargs kill
-    uv run --group docs zensical serve
+    UV_LINK_MODE=copy UV_CONCURRENT_INSTALLS=4 uv run --group docs zensical serve
 
 # Build docs
 docs-build:
-    uv run --group docs zensical build --clean
+    UV_LINK_MODE=copy UV_CONCURRENT_INSTALLS=4 uv run --group docs zensical build --clean
 
 # Remove all build, test, coverage and Python artifacts
 clean: clean-build clean-pyc clean-test clean-bake
