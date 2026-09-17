@@ -8,7 +8,7 @@ Adds column selector functionality to pyspark
 
 -   GitHub: <https://github.com/tmichel3796/PySpark_Column_Selectors/>
 -   PyPI package: <https://pypi.org/project/PySpark_Column_Selectors/>
--   Created by: **Trevor A. Michel** trevormichel.com \| GitHub <https://github.com/tmichel3796> \| PyPI <https://pypi.org/user/tmichel3796/>
+-   Created by: [**Trevor A. Michel**](trevormichel.com) \| GitHub <https://github.com/tmichel3796> \| PyPI <https://pypi.org/user/tmichel3796/>
 -   Free software: MIT License
 
 ## Features
@@ -186,7 +186,7 @@ df.select(scs.temporal())
 Selects one or more columns by position. Negative positions work the same way Python indexing does (`-1` is the last column), and a `range(...)` can be mixed in with plain integers to grab a span in one call.
 
 ``` python
-df.select(scs.by_index(range(0, 1),3))
+df.select(scs.by_index(range(0, 1), 3))
 ```
 
 | id  | name  | elevation |
@@ -607,8 +607,8 @@ Both mutations happen in the same call: every double column is cast to string, a
 ## Checking whether something is a selector
 
 ``` python
-scs.is_selector(scs.numeric())      # True
-scs.is_selector("totalscore")       # False
+scs.is_selector(scs.numeric())  # True
+scs.is_selector("totalscore")  # False
 ```
 
 ------------------------------------------------------------------------
@@ -632,10 +632,10 @@ df.select(scs.binary(require_col_match=False))
 This also applies to `by_dtype`, `by_index`, and `matches` directly:
 
 ``` python
-df.select(scs.all() - scs.by_index(range(0,8))) 
-# There are 9 total columns in the df. 
+df.select(scs.all() - scs.by_index(range(0, 8)))
+# There are 9 total columns in the df.
 # As such the above column selector expression returns all columns - all columns.
-# as such no columns of data are returned.  
+# as such no columns of data are returned.
 # Result: raises pyspark.errors.PySparkValueError -- zero columns matched
 ```
 

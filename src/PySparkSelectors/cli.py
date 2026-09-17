@@ -1,13 +1,17 @@
-"""Command-line entry point for PySparkSelectors."""
+"""Console script for PySparkSelectors."""
 
 import typer
+from rich.console import Console
 
-app = typer.Typer(help="PySpark column selector utilities.")
+app = typer.Typer()
+console = Console()
 
 
-@app.callback()
+@app.command()
 def main() -> None:
-    """Expose the PySparkSelectors command-line application."""
+    """Console script for PySparkSelectors."""
+    console.print("Replace this message by putting your code into PySparkSelectors.cli.main")
+    console.print("See Typer documentation at https://typer.tiangolo.com/")
 
 
 if __name__ == "__main__":
