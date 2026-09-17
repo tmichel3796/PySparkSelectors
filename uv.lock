@@ -506,7 +506,7 @@ sdist = { url = "https://files.pythonhosted.org/packages/c3/33/c987434f5d50aa802
 
 [[package]]
 name = "pyspark-column-selectors"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "." }
 dependencies = [
     { name = "pyspark" },
