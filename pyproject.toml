@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "PySpark_Column_Selectors"
-version = "0.1.3"
+version = "0.1.4"
 description = "Adds column selector functionality to pyspark"
 readme = "README.md"
 authors = [

@@ -8,10 +8,8 @@ Adds column selector functionality to pyspark
 
 -   GitHub: <https://github.com/tmichel3796/PySpark_Column_Selectors/>
 -   PyPI package: <https://pypi.org/project/PySpark_Column_Selectors/>
--   Created by: [**Trevor A. Michel**](trevormichel.com) \| GitHub <https://github.com/tmichel3796> \| PyPI <https://pypi.org/user/tmichel3796/>
+-   Created by: [**Trevor A. Michel**](trevormichel.com) <https://TrevorMichel.com> \| GitHub <https://github.com/tmichel3796> \| PyPI <https://pypi.org/user/tmichel3796/>
 -   Free software: MIT License
-
-## Features
 
 ## Dependencies
 
@@ -22,6 +20,10 @@ Adds column selector functionality to pyspark
     -   `withColumns` with multiple selector-driven mutations in a single call (see [Using selectors with other DataFrame operations](#using-selectors-with-other-dataframe-operations)) requires PySpark 3.3+, since `DataFrame.withColumns` itself didn't exist before then.
 -   No third-party packages beyond PySpark itself -- everything else used (`functools`, `operator`, `re`, `typing`) is part of the Python standard library.
 -   Spark Connect (`pyspark.sql.connect`) is supported automatically when present, but is not required -- this framework works the same either way.
+
+## Interactive ReadMe
+
+To view this readme as a interactive google collab document please open the link below. <https://colab.research.google.com/drive/1JRyF2u-OgNuzsaxjGJJeHjldf_znptI9?usp=sharing>
 
 ## Importing
 
@@ -48,7 +50,7 @@ df = spark.createDataFrame(
 ```
 
 | id | name | region | elevation | totalscore | isactive | signupdate | score2024 | lastseen |
-|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+|----|----|----|----|----|----|----|----|----|
 | 1 | north | east | 120.5 | 88 | true | 2024-01-15 | 910 | 2024-06-01 08:30:00 |
 | 2 | south | west | 340.0 | 95 | false | 2024-03-22 | 875 | 2024-06-02 14:45:00 |
 
@@ -325,7 +327,7 @@ df.select(scs.exclude("region"))
 ```
 
 | id | name | elevation | totalscore | isactive | signupdate | score2024 | lastseen |
-|---------|---------|---------|---------|---------|---------|---------|---------|
+|----|----|----|----|----|----|----|----|
 | 1 | north | 120.5 | 88 | true | 2024-01-15 | 910 | 2024-06-01 08:30:00 |
 | 2 | south | 340.0 | 95 | false | 2024-03-22 | 875 | 2024-06-02 14:45:00 |
 
@@ -338,7 +340,7 @@ df.select(scs.alpha())
 ```
 
 | id  | name  | region | elevation | totalscore | isactive | signupdate | lastseen            |
-|---------|---------|---------|---------|---------|---------|---------|---------|
+|-----|-------|--------|-----------|------------|----------|------------|---------------------|
 | 1   | north | east   | 120.5     | 88         | true     | 2024-01-15 | 2024-06-01 08:30:00 |
 | 2   | south | west   | 340.0     | 95         | false    | 2024-03-22 | 2024-06-02 14:45:00 |
 
