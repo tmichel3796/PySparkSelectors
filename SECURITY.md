@@ -6,26 +6,26 @@ If you find a security vulnerability in PySparkSelectors, please report it throu
 
 Please include:
 
-- What you found and how to reproduce it
-- Which version you're using
-- Any relevant logs or output (redact secrets)
+-   What you found and how to reproduce it
+-   Which version you're using
+-   Any relevant logs or output (redact secrets)
 
 ## Security Measures
 
 This project ships with security hardening out of the box:
 
-- **CodeQL** scans code for injection, SSRF, path traversal, and other dataflow vulnerabilities using the `security-extended` query suite
-- **Zizmor** audits GitHub Actions workflows for excessive permissions, unpinned actions, credential exposure, and cache poisoning risks
-- **Dependabot** keeps GitHub Actions pinned by SHA and opens PRs for updates, with a 7-day cooldown to avoid adopting compromised releases immediately
-- **All actions pinned by SHA** with version comments, not floating tags
-- **Minimal workflow permissions** (`permissions: {}` at the top level, scoped per job)
-- **`persist-credentials: false`** on checkout steps to prevent token leakage
+-   **CodeQL** scans code for injection, SSRF, path traversal, and other dataflow vulnerabilities using the `security-extended` query suite
+-   **Zizmor** audits GitHub Actions workflows for excessive permissions, unpinned actions, credential exposure, and cache poisoning risks
+-   **Dependabot** keeps GitHub Actions pinned by SHA and opens PRs for updates, with a 7-day cooldown to avoid adopting compromised releases immediately
+-   **All actions pinned by SHA** with version comments, not floating tags
+-   **Minimal workflow permissions** (`permissions: {}` at the top level, scoped per job)
+-   **`persist-credentials: false`** on checkout steps to prevent token leakage
 
 ## Response Times
 
 This is a volunteer-maintained open source project. Security reports are taken seriously, but there are no guaranteed response times.
 
-**Enterprise support** is available, with priority response SLAs. Contact Info@TrevorMichel.com for details.
+**Enterprise support** is available, with priority response SLAs. Contact [Info\@TrevorMichel.com](mailto:Info@TrevorMichel.com){.email} for details.
 
 ## Supported Versions
 

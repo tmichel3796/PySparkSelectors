@@ -2,6 +2,8 @@
 
 Contributions are welcome, and they are greatly appreciated! Every little bit helps, and credit will always be given.
 
+I have hopes to eventually integrate this project with real PySpark package. However if you look at the base code you will notice that it essentially adds a layer of computation above PySpark that modifies literally everything that PySpark does. With so much being changed I'm not very confident in my ability to make that happen with the time I have available to work on this project. I would love to work with someone already experienced with making changes on the main PySpark package to make that happen!
+
 You can contribute in many ways:
 
 ## Types of Contributions

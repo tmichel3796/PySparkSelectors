@@ -11,6 +11,10 @@ Adds column selector functionality to pyspark
 -   Created by: [**Trevor A. Michel**](trevormichel.com) <https://TrevorMichel.com> \| GitHub <https://github.com/tmichel3796> \| PyPI <https://pypi.org/user/tmichel3796/>
 -   Free software: MIT License
 
+## Interactive ReadMe
+
+To view this readme as a interactive google collab document please open the link below. <https://colab.research.google.com/drive/1JRyF2u-OgNuzsaxjGJJeHjldf_znptI9?usp=sharing>
+
 ## Dependencies
 
 -   Python 3.8+
@@ -20,10 +24,6 @@ Adds column selector functionality to pyspark
     -   `withColumns` with multiple selector-driven mutations in a single call (see [Using selectors with other DataFrame operations](#using-selectors-with-other-dataframe-operations)) requires PySpark 3.3+, since `DataFrame.withColumns` itself didn't exist before then.
 -   No third-party packages beyond PySpark itself -- everything else used (`functools`, `operator`, `re`, `typing`) is part of the Python standard library.
 -   Spark Connect (`pyspark.sql.connect`) is supported automatically when present, but is not required -- this framework works the same either way.
-
-## Interactive ReadMe
-
-To view this readme as a interactive google collab document please open the link below. <https://colab.research.google.com/drive/1JRyF2u-OgNuzsaxjGJJeHjldf_znptI9?usp=sharing>
 
 ## Importing
 
